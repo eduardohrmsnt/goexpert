@@ -21,6 +21,7 @@ type Cep struct {
 	Ddd         string `json:"ddd"`
 	Siafi       string `json:"siafi"`
 }
+
 func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/cep", BuscaCepHandler)
@@ -46,7 +47,6 @@ func (c *cepLuizAlves) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(cepLA)
 }
-
 
 func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/cep" {
