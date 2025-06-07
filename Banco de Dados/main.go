@@ -47,7 +47,7 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("Product %v, possui o preco de %.2f", productSelected.Name, product.Price)
+	fmt.Printf("Product %v, possui o preco de %.2f \n", productSelected.Name, product.Price)
 
 	products, err := selectAllProducts(db)
 
@@ -56,7 +56,23 @@ func main() {
 	}
 
 	for _, p := range *products {
-		fmt.Printf("Product %v, possui o preco de %.2f", p.Name, p.Price)
+		fmt.Printf("Product %v, possui o preco de %.2f \n", p.Name, p.Price)
+	}
+
+	err = deleteProduct(db, product.ID)
+
+	if err != nil {
+		panic(err)
+	}
+
+	products, err = selectAllProducts(db)
+
+	if err != nil {
+		panic(err)
+	}
+
+	for _, p := range *products {
+		fmt.Printf("Product %v, foi mantido \n", p.Name)
 	}
 }
 
@@ -120,4 +136,20 @@ func selectAllProducts(db *sql.DB) (*[]Product, error) {
 	}
 
 	return &products, err
+}
+
+func deleteProduct(db *sql.DB, id string) error {
+	stmt, err := db.Prepare("DELETE FROM products WHERE id = ?")
+
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(id)
+
+	if err != nil {
+		return err
+	}
+
+	return err
 }
