@@ -1,0 +1,18 @@
+POST http://localhost:8080/users HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "Eduardo Hermes",
+    "email": "eduardohermesneto@gmail.com",
+    "password": "EduA39432"
+}
+
+###
+
+POST http://localhost:8080/users/generate_token HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "eduardohermesneto@gmail.com",
+    "password": "EduA39432"
+}

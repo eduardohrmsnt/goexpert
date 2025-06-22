@@ -32,9 +32,6 @@ func obterCotacao(responseWriter http.ResponseWriter, request *http.Request) {
 	cotacao, err := buscarCotacaoApi()
 
 	if err != nil {
-		if err == context.DeadlineExceeded {
-			log.Println("Request timed out")
-		}
 		responseWriter.WriteHeader(http.StatusInternalServerError)
 		responseWriter.Write([]byte("500 - Internal Server Error"))
 		return
@@ -43,9 +40,6 @@ func obterCotacao(responseWriter http.ResponseWriter, request *http.Request) {
 	err = salvarCotacao(cotacao)
 
 	if err != nil {
-		if err == context.DeadlineExceeded {
-			log.Println("Request timed out")
-		}
 		responseWriter.WriteHeader(http.StatusInternalServerError)
 		responseWriter.Write([]byte("500 - Internal Server Error"))
 		return
@@ -62,22 +56,28 @@ func salvarCotacao(cotacao *Cotacao) error {
 
 	defer cancelDb()
 
-	db, err := sql.Open("sqlite", ":memory:")
+	db, err := sql.Open("sqlite", "./cotacao.db")
 
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 
 	defer db.Close()
-	_, err = db.ExecContext(ctxDb, `CREATE TABLE IF NOT EXISTS cotacao (
+
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS cotacao (
 		valor TEXT
 	)`)
+
+	if err != nil {
+		return err
+	}
 
 	_, err = db.ExecContext(ctxDb, "INSERT INTO cotacao (valor) VALUES (?)", &cotacao.Valor)
 
 	if err != nil {
-		log.Println(err)
+		if err == context.DeadlineExceeded {
+			log.Println("Request timed out on db insert")
+		}
 		return err
 	}
 
@@ -99,14 +99,25 @@ func buscarCotacaoApi() (*Cotacao, error) {
 	content, err := http.DefaultClient.Do(req)
 
 	if err != nil {
+		if err == context.DeadlineExceeded {
+			log.Println("Request timed out on API")
+		}
 		return nil, err
 	}
 
 	defer content.Body.Close()
 	body, err := io.ReadAll(content.Body)
 
+	if err != nil {
+		return nil, err
+	}
+
 	var cotacao CotacaoResponse
 	err = json.Unmarshal(body, &cotacao)
+
+	if err != nil {
+		return nil, err
+	}
 
 	return &cotacao.Cotacao, nil
 }

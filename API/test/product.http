@@ -1,0 +1,33 @@
+POST http://localhost:8080/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTA2MzEzMDksInN1YiI6IjFkZTkyOTk2LTBkZWItNDNmYy1iMjVhLTA0ZjVmMmZhOGMzNiJ9.Jrpz7DkcT734eYiijmYmlBX_w-JFav8lD6KG4Dp1Ano
+
+{
+    "name": "My Product",
+    "price": 10.99
+}
+###
+
+GET  http://localhost:8080/products/898d4364-d93c-4789-a418-4c830f12599c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTA2MzQ2MjYsInN1YiI6IjFkZTkyOTk2LTBkZWItNDNmYy1iMjVhLTA0ZjVmMmZhOGMzNiJ9.2TDQSIgngzG_yqPv-WWLnK1QT4qLc_O3V778BA8LRJM
+Content-Type: application/json
+
+###
+
+PUT  http://localhost:8080/products/4302cfc6-1388-4e0b-8caf-69bd753c4099
+Content-Type: application/json
+
+{
+    "name": "My Product Dois",
+    "price": 11.99
+}
+
+###
+
+DELETE  http://localhost:8080/products/4302cfc6-1388-4e0b-8caf-69bd753c4099
+Content-Type: application/json
+
+###
+
+GET  http://localhost:8080/products
+Content-Type: application/json
